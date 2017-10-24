@@ -14,6 +14,7 @@ import android.view.View;
  * Created by Khurram Shehzad on 18 October 2017
  */
 // https://code.tutsplus.com/tutorials/creating-and-publishing-an-android-library--cms-24582
+// https://stackoverflow.com/questions/38211153/distribute-android-library-in-jcenter-to-use-in-gradle/43951025#43951025
 public class CircleChart extends View {
 public CircleChart(Context context) {
     super(context);
