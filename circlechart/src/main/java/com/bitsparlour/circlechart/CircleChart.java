@@ -50,7 +50,7 @@ protected void onDraw(Canvas canvas) {
     final int height = getHeight();
     final int center = Math.min(width, height) / 2;
     final int radius = center - 75;
-    final int titleRadius = radius + 25;
+    final int titleRadius = radius + 15;
     final double angle = (2 * Math.PI) / sectors;
     final float trackRadius = radius / tracks;
 
