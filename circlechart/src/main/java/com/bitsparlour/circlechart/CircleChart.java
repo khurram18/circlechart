@@ -70,11 +70,10 @@ protected void onDraw(Canvas canvas) {
         }
     }
 
-
-
-
+    guidelinePaint.reset();
     guidelinePaint.setStyle(Paint.Style.STROKE);
     guidelinePaint.setColor(guideLinesColor);
+    guidelinePaint.setStrokeWidth(2);
 
     // Draw sectors
     for (int i = 0; i < sectors; ++i) {
@@ -92,14 +91,6 @@ protected void onDraw(Canvas canvas) {
         }
     }
     guidelinePaint.setStyle(Paint.Style.STROKE);
-//
-//    path.reset();
-
-//    final float lowerRadius = trackRadius * 2;
-//    final float upperRadius = trackRadius * 3;
-//
-//    final int startAngleFinal = 0;
-//    final float endAngleFinal = (float) angle;
 }
 private void drawSegment(final float cx,
                          final float cy,
@@ -110,7 +101,9 @@ private void drawSegment(final float cx,
                          Canvas canvas,
                          final int fillColor) {
 
-    guidelinePaint.setStyle(Paint.Style.FILL);
+    guidelinePaint.reset();
+    guidelinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+    guidelinePaint.setStrokeWidth(2);
     guidelinePaint.setColor(fillColor);
     final float da = (float) ((Math.PI / 180) * 0.25);
     float currentAngle = segmentStartAngle;
@@ -148,7 +141,6 @@ private void drawSegment(final float cx,
 }
 private void init() {
     guidelinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    guidelinePaint.setStrokeWidth(2);
     path = new Path();
 }
 private void reload() {
