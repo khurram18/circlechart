@@ -11,4 +11,7 @@ int guideLinesColor();
 int fillColorForSector(int sectorIndex);
 boolean shouldFillSegment(int sectorIndex, int trackIndex);
 boolean shouldDrawTrack(int trackIndex);
+String titleForSector(int sectorIndex);
+// In pixels
+float titleTextSize();
 }

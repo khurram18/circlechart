@@ -1,8 +1,9 @@
 package com.bitsparlour.circlechartdemo;
 
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.util.TypedValue;
 
 import com.bitsparlour.circlechart.CircleChart;
 import com.bitsparlour.circlechart.CircleChartDataSource;
@@ -81,6 +82,33 @@ private CircleChartDataSource circleChartDataSource = new CircleChartDataSource(
     @Override
     public boolean shouldDrawTrack(int trackIndex) {
         return trackIndex > 1 && trackIndex < 7;
+    }
+
+    @Override
+    public String titleForSector(int sectorIndex) {
+        switch (sectorIndex) {
+            case 0: {
+                return "Group A";
+            }
+            case 1: {
+                return "Group B";
+            }
+            case 2: {
+                return "Group C";
+            }
+            case 3: {
+                return "Group D";
+            }
+            case 4: {
+                return "Group E";
+            }
+        }
+        return "";
+    }
+
+    @Override
+    public float titleTextSize() {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics());
     }
 };
 }

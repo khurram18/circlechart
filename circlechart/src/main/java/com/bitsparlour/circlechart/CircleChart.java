@@ -49,7 +49,8 @@ protected void onDraw(Canvas canvas) {
     final int width = getWidth();
     final int height = getHeight();
     final int center = Math.min(width, height) / 2;
-    final int radius = center - 50;
+    final int radius = center - 75;
+    final int titleRadius = radius + 25;
     final double angle = (2 * Math.PI) / sectors;
     final float trackRadius = radius / tracks;
 
@@ -78,9 +79,19 @@ protected void onDraw(Canvas canvas) {
     // Draw sectors
     for (int i = 0; i < sectors; ++i) {
         path.reset();
+
         path.moveTo(center, center);
-        path.lineTo((float) (center + (radius * Math.cos(angle * i))), (float) (center + (radius * Math.sin(angle * i))));
+        float arcStartAngle = (float) (angle * i);
+        path.lineTo((float) (center + (radius * Math.cos(arcStartAngle))), (float) (center + (radius * Math.sin(arcStartAngle))));
         canvas.drawPath(path, guidelinePaint);
+        float arcEndAngle = (float) (angle * (i + 1));
+        float midAngle = (arcStartAngle + arcEndAngle) / 2;
+        float x = (float) (center + (titleRadius * Math.cos(midAngle)));
+        float y = (float) (center + (titleRadius * Math.sin(midAngle)));
+        if (Math.abs(midAngle - Math.PI) < ((5 * Math.PI) / 180)) {
+            x-= 50;
+        }
+        canvas.drawText(titles[i], x, y, titlePaint);
     }
     // Draw tracks
     for (int i = 0; i < tracks; ++i) {
@@ -90,7 +101,6 @@ protected void onDraw(Canvas canvas) {
             canvas.drawPath(path, guidelinePaint);
         }
     }
-    guidelinePaint.setStyle(Paint.Style.STROKE);
 }
 private void drawSegment(final float cx,
                          final float cy,
@@ -101,10 +111,7 @@ private void drawSegment(final float cx,
                          Canvas canvas,
                          final int fillColor) {
 
-    guidelinePaint.reset();
-    guidelinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
-    guidelinePaint.setStrokeWidth(2);
-    guidelinePaint.setColor(fillColor);
+    segmentPaint.setColor(fillColor);
     final float da = (float) ((Math.PI / 180) * 0.25);
     float currentAngle = segmentStartAngle;
     while (currentAngle <= segmentEndAngle) {
@@ -134,14 +141,19 @@ private void drawSegment(final float cx,
         path.lineTo(startX, startY);
         path.close();
 
-        canvas.drawPath(path, guidelinePaint);
+        canvas.drawPath(path, segmentPaint);
 
         currentAngle += da;
     }
 }
 private void init() {
+    segmentPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    segmentPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+    segmentPaint.setStrokeWidth(2);
     guidelinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     path = new Path();
+    titlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    titlePaint.setTextSize(textSize);
 }
 private void reload() {
     if (circleChartDataSource != null) {
@@ -149,10 +161,12 @@ private void reload() {
         tracks = circleChartDataSource.numberOfTracks(this);
         guideLinesColor = circleChartDataSource.guideLinesColor();
         sectorFillColors = new int[sectors];
+        titles = new String[sectors];
         fillSegments = new boolean[sectors][tracks];
         drawTracks = new boolean[tracks];
         for (int sector = 0; sector < sectors; ++sector) {
             sectorFillColors[sector] = circleChartDataSource.fillColorForSector(sector);
+            titles[sector] = circleChartDataSource.titleForSector(sector);
             for (int track = 0; track < tracks; ++track) {
                 fillSegments[sector][track] = circleChartDataSource.shouldFillSegment(sector, track);
             }
@@ -160,15 +174,21 @@ private void reload() {
         for (int track = 0; track < tracks; ++track) {
             drawTracks[track] = circleChartDataSource.shouldDrawTrack(track);
         }
+        textSize = circleChartDataSource.titleTextSize();
+        titlePaint.setTextSize(textSize);
     }
 }
 private Path path;
+private Paint segmentPaint;
 private Paint guidelinePaint;
+private Paint titlePaint;
 private int sectors = 1;
 private int tracks = 1;
 private CircleChartDataSource circleChartDataSource;
 private int[] sectorFillColors;
 private boolean[][] fillSegments;
 private boolean[] drawTracks;
+private String[] titles;
 private int guideLinesColor;
+private float textSize = 20;
 }
