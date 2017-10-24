@@ -50,8 +50,33 @@ protected void onDraw(Canvas canvas) {
     final int height = getHeight();
     final int center = Math.min(width, height) / 2;
     final int radius = center - 50;
+    final double angle = (2 * Math.PI) / sectors;
+    final float trackRadius = radius / tracks;
+
+    for (int sector = 0; sector < sectors; ++sector) {
+
+        for (int track = 0; track < tracks; ++track) {
+
+            if (fillSegments[sector][track]) {
+                drawSegment(center,
+                        center,
+                        trackRadius * track,  // lower radius
+                        trackRadius * (track + 1),  // upper radius
+                        (float) (angle * sector),  // segment start angle
+                        (float) (angle * (sector + 1)), // segment end angle
+                        canvas,
+                        sectorFillColors[sector]);
+            }
+        }
+    }
+
+
+
+
+    guidelinePaint.setStyle(Paint.Style.STROKE);
+    guidelinePaint.setColor(guideLinesColor);
+
     // Draw sectors
-    double angle = (2 * Math.PI) / sectors;
     for (int i = 0; i < sectors; ++i) {
         path.reset();
         path.moveTo(center, center);
@@ -59,13 +84,67 @@ protected void onDraw(Canvas canvas) {
         canvas.drawPath(path, guidelinePaint);
     }
     // Draw tracks
-    float trackRadius = radius / tracks;
-    for (int i = 1; i <= tracks; ++i) {
-        path.reset();
-        path.addCircle(center, center, trackRadius * i, Path.Direction.CCW);
-        canvas.drawPath(path, guidelinePaint);
+    for (int i = 0; i < tracks; ++i) {
+        if (drawTracks[i]) {
+            path.reset();
+            path.addCircle(center, center, trackRadius * i, Path.Direction.CCW);
+            canvas.drawPath(path, guidelinePaint);
+        }
     }
     guidelinePaint.setStyle(Paint.Style.STROKE);
+//
+//    path.reset();
+
+//    final float lowerRadius = trackRadius * 2;
+//    final float upperRadius = trackRadius * 3;
+//
+//    final int startAngleFinal = 0;
+//    final float endAngleFinal = (float) angle;
+}
+private void drawSegment(final float cx,
+                         final float cy,
+                         final float lowerRadius,
+                         final float upperRadius,
+                         final float segmentStartAngle,
+                         final float segmentEndAngle,
+                         Canvas canvas,
+                         final int fillColor) {
+
+    guidelinePaint.setStyle(Paint.Style.FILL);
+    guidelinePaint.setColor(fillColor);
+    final float da = (float) ((Math.PI / 180) * 0.25);
+    float currentAngle = segmentStartAngle;
+    while (currentAngle <= segmentEndAngle) {
+
+        path.reset();
+
+        float endAngle = currentAngle + da;
+
+        final float startX = (float) (cx + (lowerRadius * Math.cos(currentAngle)));
+        final float startY = (float) (cy + (lowerRadius * Math.sin(currentAngle)));
+
+        final float endX = (float) (cx + (lowerRadius * Math.cos(endAngle)));
+        final float endY = (float) (cy + (lowerRadius * Math.sin(endAngle)));
+
+        path.moveTo(startX, startY);
+        path.lineTo(endX, endY);
+
+        final float upperStartX =  (float) (cx+ (upperRadius * Math.cos(endAngle)));
+        final float upperStartY = (float) (cy + (upperRadius * Math.sin(endAngle)));
+
+        final float upperEndX =  (float) (cx + (upperRadius * Math.cos(currentAngle)));
+        final float upperEndY = (float) (cy + (upperRadius * Math.sin(currentAngle)));
+
+        path.lineTo(upperStartX, upperStartY);
+        path.lineTo(upperEndX, upperEndY);
+
+        path.lineTo(startX, startY);
+        path.close();
+
+        canvas.drawPath(path, guidelinePaint);
+
+        currentAngle += da;
+    }
 }
 private void init() {
     guidelinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -76,8 +155,19 @@ private void reload() {
     if (circleChartDataSource != null) {
         sectors = circleChartDataSource.numberOfSectors(this);
         tracks = circleChartDataSource.numberOfTracks(this);
-        guidelinePaint.setColor(circleChartDataSource.guideLinesColor());
-        guidelinePaint.setStyle(Paint.Style.STROKE);
+        guideLinesColor = circleChartDataSource.guideLinesColor();
+        sectorFillColors = new int[sectors];
+        fillSegments = new boolean[sectors][tracks];
+        drawTracks = new boolean[tracks];
+        for (int sector = 0; sector < sectors; ++sector) {
+            sectorFillColors[sector] = circleChartDataSource.fillColorForSector(sector);
+            for (int track = 0; track < tracks; ++track) {
+                fillSegments[sector][track] = circleChartDataSource.shouldFillSegment(sector, track);
+            }
+        }
+        for (int track = 0; track < tracks; ++track) {
+            drawTracks[track] = circleChartDataSource.shouldDrawTrack(track);
+        }
     }
 }
 private Path path;
@@ -85,4 +175,8 @@ private Paint guidelinePaint;
 private int sectors = 1;
 private int tracks = 1;
 private CircleChartDataSource circleChartDataSource;
+private int[] sectorFillColors;
+private boolean[][] fillSegments;
+private boolean[] drawTracks;
+private int guideLinesColor;
 }
