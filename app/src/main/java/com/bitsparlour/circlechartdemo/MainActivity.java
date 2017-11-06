@@ -15,9 +15,50 @@ protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    CircleChart circleChart = (CircleChart) findViewById(R.id.circleChart);
-    circleChart.setCircleChartDataSource(circleChartDataSource);
+    CircleChart circleChart = findViewById(R.id.circleChart);
+    circleChart.setCircleChartDataSource(emptyChartDataSource);
 }
+private CircleChartDataSource emptyChartDataSource = new CircleChartDataSource() {
+    @Override
+    public int numberOfSectors(CircleChart circleChart) {
+        return 5;
+    }
+
+    @Override
+    public int numberOfTracks(CircleChart circleChart) {
+        return 8;
+    }
+
+    @Override
+    public int guideLinesColor(CircleChart circleChart) {
+        return ContextCompat.getColor(MainActivity.this, android.R.color.darker_gray);
+    }
+
+    @Override
+    public int fillColorForSector(CircleChart circleChart, int sectorIndex) {
+        return ContextCompat.getColor(MainActivity.this, android.R.color.transparent);
+    }
+
+    @Override
+    public boolean shouldFillSegment(CircleChart circleChart, int trackIndex, int sectorIndex) {
+        return false;
+    }
+
+    @Override
+    public boolean shouldDrawTrack(CircleChart circleChart, int trackIndex) {
+        return trackIndex > 1 && trackIndex < 7;
+    }
+
+    @Override
+    public String titleForSector(CircleChart circleChart, int sectorIndex) {
+        return null;
+    }
+
+    @Override
+    public float titleTextSize(CircleChart circleChart) {
+        return 0;
+    }
+};
 private CircleChartDataSource circleChartDataSource = new CircleChartDataSource() {
     @Override
     public int numberOfSectors(CircleChart circleChart) {
@@ -30,12 +71,12 @@ private CircleChartDataSource circleChartDataSource = new CircleChartDataSource(
     }
 
     @Override
-    public int guideLinesColor() {
+    public int guideLinesColor(CircleChart circleChart) {
         return ContextCompat.getColor(MainActivity.this, android.R.color.darker_gray);
     }
 
     @Override
-    public int fillColorForSector(int sectorIndex) {
+    public int fillColorForSector(CircleChart circleChart, int sectorIndex) {
         switch (sectorIndex) {
             case 0: {
                 return ContextCompat.getColor(MainActivity.this, R.color.group_a_fill);
@@ -57,7 +98,7 @@ private CircleChartDataSource circleChartDataSource = new CircleChartDataSource(
     }
 
     @Override
-    public boolean shouldFillSegment(int sectorIndex, int trackIndex) {
+    public boolean shouldFillSegment(CircleChart circleChart, int trackIndex, int sectorIndex) {
 
         switch (sectorIndex) {
             case 0: {
@@ -80,12 +121,12 @@ private CircleChartDataSource circleChartDataSource = new CircleChartDataSource(
     }
 
     @Override
-    public boolean shouldDrawTrack(int trackIndex) {
+    public boolean shouldDrawTrack(CircleChart circleChart, int trackIndex) {
         return trackIndex > 1 && trackIndex < 7;
     }
 
     @Override
-    public String titleForSector(int sectorIndex) {
+    public String titleForSector(CircleChart circleChart, int sectorIndex) {
         switch (sectorIndex) {
             case 0: {
                 return "Group A";
@@ -107,7 +148,7 @@ private CircleChartDataSource circleChartDataSource = new CircleChartDataSource(
     }
 
     @Override
-    public float titleTextSize() {
+    public float titleTextSize(CircleChart circleChart) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics());
     }
 };

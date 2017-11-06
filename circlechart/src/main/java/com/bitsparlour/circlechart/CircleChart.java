@@ -46,7 +46,9 @@ public void setCircleChartDataSource(CircleChartDataSource circleChartDataSource
 @Override
 protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
-
+    if (!dataAvailable) {
+        return;
+    }
     final int width = getWidth();
     final int height = getHeight();
     final int center = Math.min(width, height) / 2;
@@ -92,7 +94,10 @@ protected void onDraw(Canvas canvas) {
         if (Math.abs(midAngle - Math.PI) < ((5 * Math.PI) / 180)) {
             x-= 50;
         }
-        canvas.drawText(titles[i], x, y, titlePaint);
+        String title = titles[i];
+        if (title != null) {
+            canvas.drawText(title, x, y, titlePaint);
+        }
     }
     // Draw tracks
     for (int i = 0; i < tracks; ++i) {
@@ -160,23 +165,27 @@ private void reload() {
     if (circleChartDataSource != null) {
         sectors = circleChartDataSource.numberOfSectors(this);
         tracks = circleChartDataSource.numberOfTracks(this);
-        guideLinesColor = circleChartDataSource.guideLinesColor();
+        guideLinesColor = circleChartDataSource.guideLinesColor(this);
         sectorFillColors = new int[sectors];
         titles = new String[sectors];
         fillSegments = new boolean[sectors][tracks];
         drawTracks = new boolean[tracks];
         for (int sector = 0; sector < sectors; ++sector) {
-            sectorFillColors[sector] = circleChartDataSource.fillColorForSector(sector);
-            titles[sector] = circleChartDataSource.titleForSector(sector);
+            sectorFillColors[sector] = circleChartDataSource.fillColorForSector(this, sector);
+            titles[sector] = circleChartDataSource.titleForSector(this, sector);
             for (int track = 0; track < tracks; ++track) {
-                fillSegments[sector][track] = circleChartDataSource.shouldFillSegment(sector, track);
+                fillSegments[sector][track] = circleChartDataSource.shouldFillSegment(this, track, sector);
             }
         }
         for (int track = 0; track < tracks; ++track) {
-            drawTracks[track] = circleChartDataSource.shouldDrawTrack(track);
+            drawTracks[track] = circleChartDataSource.shouldDrawTrack(this, track);
         }
-        textSize = circleChartDataSource.titleTextSize();
+        textSize = circleChartDataSource.titleTextSize(this);
         titlePaint.setTextSize(textSize);
+        dataAvailable = true;
+    }
+    else {
+        dataAvailable = false;
     }
 }
 private Path path;
@@ -192,4 +201,5 @@ private boolean[] drawTracks;
 private String[] titles;
 private int guideLinesColor;
 private float textSize = 20;
+private boolean dataAvailable = false;
 }

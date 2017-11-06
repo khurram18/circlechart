@@ -7,11 +7,11 @@ package com.bitsparlour.circlechart;
 public interface CircleChartDataSource {
 int numberOfSectors(CircleChart circleChart);
 int numberOfTracks(CircleChart circleChart);
-int guideLinesColor();
-int fillColorForSector(int sectorIndex);
-boolean shouldFillSegment(int sectorIndex, int trackIndex);
-boolean shouldDrawTrack(int trackIndex);
-String titleForSector(int sectorIndex);
+int guideLinesColor(CircleChart circleChart);
+int fillColorForSector(CircleChart circleChart, int sectorIndex);
+boolean shouldFillSegment(CircleChart circleChart, int trackIndex, int sectorIndex);
+boolean shouldDrawTrack(CircleChart circleChart, int trackIndex);
+String titleForSector(CircleChart circleChart, int sectorIndex);
 // In pixels
-float titleTextSize();
+float titleTextSize(CircleChart circleChart);
 }
