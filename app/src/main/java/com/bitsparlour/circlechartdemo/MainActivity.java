@@ -16,7 +16,7 @@ protected void onCreate(Bundle savedInstanceState) {
     setContentView(R.layout.activity_main);
 
     CircleChart circleChart = findViewById(R.id.circleChart);
-    circleChart.setCircleChartDataSource(emptyChartDataSource);
+    circleChart.setCircleChartDataSource(circleChartDataSource);
 }
 private CircleChartDataSource emptyChartDataSource = new CircleChartDataSource() {
     @Override
@@ -62,7 +62,7 @@ private CircleChartDataSource emptyChartDataSource = new CircleChartDataSource()
 private CircleChartDataSource circleChartDataSource = new CircleChartDataSource() {
     @Override
     public int numberOfSectors(CircleChart circleChart) {
-        return 5;
+        return 6;
     }
 
     @Override
@@ -79,19 +79,22 @@ private CircleChartDataSource circleChartDataSource = new CircleChartDataSource(
     public int fillColorForSector(CircleChart circleChart, int sectorIndex) {
         switch (sectorIndex) {
             case 0: {
-                return ContextCompat.getColor(MainActivity.this, R.color.group_a_fill);
+                return ContextCompat.getColor(MainActivity.this, R.color.summary_chart_fill_0);
             }
             case 1: {
-                return ContextCompat.getColor(MainActivity.this, R.color.group_b_fill);
+                return ContextCompat.getColor(MainActivity.this, R.color.summary_chart_fill_1);
             }
             case 2: {
-                return ContextCompat.getColor(MainActivity.this, R.color.group_c_fill);
+                return ContextCompat.getColor(MainActivity.this, R.color.summary_chart_fill_2);
             }
             case 3: {
-                return ContextCompat.getColor(MainActivity.this, R.color.group_d_fill);
+                return ContextCompat.getColor(MainActivity.this, R.color.summary_chart_fill_3);
             }
             case 4: {
-                return ContextCompat.getColor(MainActivity.this, R.color.group_e_fill);
+                return ContextCompat.getColor(MainActivity.this, R.color.summary_chart_fill_4);
+            }
+            case 5: {
+                return ContextCompat.getColor(MainActivity.this, R.color.summary_chart_fill_5);
             }
         }
         return ContextCompat.getColor(MainActivity.this, android.R.color.holo_green_dark);
@@ -115,6 +118,9 @@ private CircleChartDataSource circleChartDataSource = new CircleChartDataSource(
             }
             case 4: {
                 return trackIndex == 0 || trackIndex == 1 || trackIndex == 2 || trackIndex == 3;
+            }
+            case 5: {
+                return trackIndex == 0 || trackIndex == 1 || trackIndex == 2;
             }
         }
         return false;
@@ -142,6 +148,9 @@ private CircleChartDataSource circleChartDataSource = new CircleChartDataSource(
             }
             case 4: {
                 return "Group E";
+            }
+            case 5: {
+                return "Group F";
             }
         }
         return "";

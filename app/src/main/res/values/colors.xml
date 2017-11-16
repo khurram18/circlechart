@@ -4,9 +4,10 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="group_a_fill">#997710e0</color>
-    <color name="group_b_fill">#997ed321</color>
-    <color name="group_c_fill">#99ff3a52</color>
-    <color name="group_d_fill">#99ff6f00</color>
-    <color name="group_e_fill">#9900adff</color>
+    <color name="summary_chart_fill_0">#997710e0</color>
+    <color name="summary_chart_fill_1">#99ffc400</color>
+    <color name="summary_chart_fill_2">#99ff3a52</color>
+    <color name="summary_chart_fill_3">#9947e4c2</color>
+    <color name="summary_chart_fill_4">#997ed321</color>
+    <color name="summary_chart_fill_5">#9900adff</color>
 </resources>

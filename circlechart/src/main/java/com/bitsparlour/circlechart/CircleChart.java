@@ -49,11 +49,11 @@ protected void onDraw(Canvas canvas) {
     if (!dataAvailable) {
         return;
     }
-    final int width = getWidth();
-    final int height = getHeight();
+    final int width = getWidth() - 50;
+    final int height = getHeight() - 50;
     final int center = Math.min(width, height) / 2;
     final int radius = center - 75;
-    final int titleRadius = radius + 15;
+    final int titleRadius = radius - 5;
     final double angle = (2 * Math.PI) / sectors;
     final float trackRadius = radius / tracks;
 
@@ -79,10 +79,18 @@ protected void onDraw(Canvas canvas) {
     guidelinePaint.setColor(guideLinesColor);
     guidelinePaint.setStrokeWidth(2);
 
+    // Draw tracks
+    for (int i = 0; i < tracks; ++i) {
+        if (drawTracks[i]) {
+            path.reset();
+            path.addCircle(center, center, trackRadius * i, Path.Direction.CCW);
+            canvas.drawPath(path, guidelinePaint);
+        }
+    }
+
     // Draw sectors
     for (int i = 0; i < sectors; ++i) {
         path.reset();
-
         path.moveTo(center, center);
         float arcStartAngle = (float) (angle * i);
         path.lineTo((float) (center + (radius * Math.cos(arcStartAngle))), (float) (center + (radius * Math.sin(arcStartAngle))));
@@ -91,20 +99,9 @@ protected void onDraw(Canvas canvas) {
         float midAngle = (arcStartAngle + arcEndAngle) / 2;
         float x = (float) (center + (titleRadius * Math.cos(midAngle)));
         float y = (float) (center + (titleRadius * Math.sin(midAngle)));
-        if (Math.abs(midAngle - Math.PI) < ((5 * Math.PI) / 180)) {
-            x-= 50;
-        }
         String title = titles[i];
         if (title != null) {
             canvas.drawText(title, x, y, titlePaint);
-        }
-    }
-    // Draw tracks
-    for (int i = 0; i < tracks; ++i) {
-        if (drawTracks[i]) {
-            path.reset();
-            path.addCircle(center, center, trackRadius * i, Path.Direction.CCW);
-            canvas.drawPath(path, guidelinePaint);
         }
     }
 }
@@ -170,6 +167,8 @@ private void reload() {
         titles = new String[sectors];
         fillSegments = new boolean[sectors][tracks];
         drawTracks = new boolean[tracks];
+        textSize = circleChartDataSource.titleTextSize(this);
+        titlePaint.setTextSize(textSize);
         for (int sector = 0; sector < sectors; ++sector) {
             sectorFillColors[sector] = circleChartDataSource.fillColorForSector(this, sector);
             titles[sector] = circleChartDataSource.titleForSector(this, sector);
@@ -180,8 +179,6 @@ private void reload() {
         for (int track = 0; track < tracks; ++track) {
             drawTracks[track] = circleChartDataSource.shouldDrawTrack(this, track);
         }
-        textSize = circleChartDataSource.titleTextSize(this);
-        titlePaint.setTextSize(textSize);
         dataAvailable = true;
     }
     else {
