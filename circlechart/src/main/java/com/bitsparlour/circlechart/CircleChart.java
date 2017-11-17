@@ -50,10 +50,9 @@ protected void onDraw(Canvas canvas) {
     if (!dataAvailable) {
         return;
     }
-    final int width = getWidth() - 50;
-    final int height = getHeight() - 50;
-    final int center = Math.min(width, height) / 2;
-    final int radius = center - 75;
+    final int cx = (getWidth() - 50) / 2;
+    final int cy = (getHeight() - 50) / 2;
+    final int radius = cx - 75;
     final int titleRadius = radius - 5;
     final double angle = (2 * Math.PI) / sectors;
     final float trackRadius = radius / tracks;
@@ -63,8 +62,8 @@ protected void onDraw(Canvas canvas) {
         for (int track = 0; track < tracks; ++track) {
 
             if (fillSegments[sector][track]) {
-                drawSegment(center,
-                        center,
+                drawSegment(cx,
+                        cy,
                         trackRadius * track,  // lower radius
                         trackRadius * (track + 1),  // upper radius
                         (float) (angle * sector),  // segment start angle
@@ -84,7 +83,7 @@ protected void onDraw(Canvas canvas) {
     for (int i = 0; i < tracks; ++i) {
         if (drawTracks[i]) {
             path.reset();
-            path.addCircle(center, center, trackRadius * i, Path.Direction.CCW);
+            path.addCircle(cx, cy, trackRadius * i, Path.Direction.CCW);
             canvas.drawPath(path, guidelinePaint);
         }
     }
@@ -92,14 +91,14 @@ protected void onDraw(Canvas canvas) {
     // Draw sectors
     for (int i = 0; i < sectors; ++i) {
         path.reset();
-        path.moveTo(center, center);
+        path.moveTo(cx, cy);
         float arcStartAngle = (float) (angle * i);
-        path.lineTo((float) (center + (radius * Math.cos(arcStartAngle))), (float) (center + (radius * Math.sin(arcStartAngle))));
+        path.lineTo((float) (cx + (radius * Math.cos(arcStartAngle))), (float) (cy + (radius * Math.sin(arcStartAngle))));
         canvas.drawPath(path, guidelinePaint);
         float arcEndAngle = (float) (angle * (i + 1));
         float midAngle = (arcStartAngle + arcEndAngle) / 2;
-        float x = (float) (center + (titleRadius * Math.cos(midAngle)));
-        float y = (float) (center + (titleRadius * Math.sin(midAngle)));
+        float x = (float) (cx + (titleRadius * Math.cos(midAngle)));
+        float y = (float) (cy + (titleRadius * Math.sin(midAngle)));
         String title = titles[i];
         if (title != null) {
             canvas.drawText(title, x, y, titlePaint);
