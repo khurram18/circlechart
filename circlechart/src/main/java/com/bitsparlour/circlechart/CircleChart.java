@@ -55,6 +55,7 @@ protected void onDraw(Canvas canvas) {
     final int radius = cx - 75;
     final int titleRadius = radius - 5;
     final double angle = (2 * Math.PI) / sectors;
+    final double piBy2 = Math.PI / 2;
     final float trackRadius = radius / tracks;
 
     for (int sector = 0; sector < sectors; ++sector) {
@@ -66,8 +67,8 @@ protected void onDraw(Canvas canvas) {
                         cy,
                         trackRadius * track,  // lower radius
                         trackRadius * (track + 1),  // upper radius
-                        (float) (angle * sector),  // segment start angle
-                        (float) (angle * (sector + 1)), // segment end angle
+                        (float) ((angle * sector) - piBy2),  // segment start angle
+                        (float) ((angle * (sector + 1)) - piBy2), // segment end angle
                         canvas,
                         sectorFillColors[sector]);
             }
@@ -92,10 +93,10 @@ protected void onDraw(Canvas canvas) {
     for (int i = 0; i < sectors; ++i) {
         path.reset();
         path.moveTo(cx, cy);
-        float arcStartAngle = (float) (angle * i);
+        float arcStartAngle = (float) ((angle * i) - piBy2);
         path.lineTo((float) (cx + (radius * Math.cos(arcStartAngle))), (float) (cy + (radius * Math.sin(arcStartAngle))));
         canvas.drawPath(path, guidelinePaint);
-        float arcEndAngle = (float) (angle * (i + 1));
+        float arcEndAngle = (float) ((angle * (i + 1)) - piBy2);
         float midAngle = (arcStartAngle + arcEndAngle) / 2;
         float x = (float) (cx + (titleRadius * Math.cos(midAngle)));
         float y = (float) (cy + (titleRadius * Math.sin(midAngle)));
